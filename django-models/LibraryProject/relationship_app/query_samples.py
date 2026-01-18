@@ -22,8 +22,8 @@ def query_books_by_author(author_name):
     """
     try:
         author = Author.objects.get(name=author_name)
-        # Using the related_name "books" defined in the Book model
-        books = author.books.all()
+        # Using filter with author object
+        books = Book.objects.filter(author=author)
         return books
     except Author.DoesNotExist:
         return Book.objects.none()
