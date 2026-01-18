@@ -82,8 +82,8 @@ def get_librarian_for_library(library_name):
     """
     try:
         library = Library.objects.get(name=library_name)
-        # Access librarian through the related_name "librarian" defined in Librarian model
-        librarian = library.librarian
+        # Using get with library object
+        librarian = Librarian.objects.get(library=library)
         return librarian
     except Library.DoesNotExist:
         return None
