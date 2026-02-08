@@ -8,8 +8,11 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
+
+Security: DEBUG=False in production; secure cookie and browser headers configured.
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m@_w%x%si&_d7*+&2-u3ol=4=n+_lz847@mnls^o-gese099^='
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-m@_w%x%si&_d7*+&2-u3ol=4=n+_lz847@mnls^o-gese099^=')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECURITY: Set DEBUG to False in production to avoid exposing tracebacks and debug tools.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if not DEBUG else ['*']
 
 
 # Application definition
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'LibraryProject.middleware.SecurityHeadersMiddleware',  # XSS filter + CSP headers
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -125,3 +129,31 @@ STATIC_URL = 'static/'
 # Media files (user uploads, e.g. profile photos)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# -----------------------------------------------------------------------------
+# Security best practices (XSS, CSRF, clickjacking, HTTPS cookies, CSP)
+# -----------------------------------------------------------------------------
+
+# Browser XSS filter: enables browser's XSS filtering (X-XSS-Protection header).
+SECURE_BROWSER_XSS_FILTER = True
+
+# Prevent clickjacking: deny embedding in iframes (X-Frame-Options: DENY).
+X_FRAME_OPTIONS = 'DENY'
+
+# Prevent MIME-type sniffing (X-Content-Type-Options: nosniff).
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Cookies sent only over HTTPS only. Set True to enforce HTTPS for cookies (required in production).
+# For local HTTP testing, set to False temporarily so session/CSRF work.
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Content Security Policy: restrict sources for scripts, styles, etc. to reduce XSS risk.
+# Default policy allows same origin and inline (adjust for production).
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:", "https:")
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)

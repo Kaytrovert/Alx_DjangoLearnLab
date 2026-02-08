@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head><title>Books</title></head>
 <body>
 <h1>Books</h1>
+{% if form %}
+<form method="get" action="">
+  {{ form.as_p }}
+  <button type="submit">Search</button>
+</form>
+{% endif %}
 <ul>
   {% for book in books %}
   <li>{{ book.title }} by {{ book.author }} ({{ book.publication_year }})</li>
