@@ -1,3 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import permission_required
 
-# Create your views here.
+from .models import Book
+
+
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    """List all books. Requires bookshelf.can_view permission."""
+    books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'books': books})
