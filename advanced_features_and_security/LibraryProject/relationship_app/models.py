@@ -16,14 +16,19 @@ class Author(models.Model):
 
 
 class Book(models.Model):
+    """
+    Book model with custom permissions for access control.
+    Permissions: can_view, can_create, can_edit, can_delete.
+    """
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
 
     class Meta:
         permissions = [
-            ('can_add_book', 'Can add book'),
-            ('can_change_book', 'Can change book'),
-            ('can_delete_book', 'Can delete book'),
+            ('can_view', 'Can view'),
+            ('can_create', 'Can create'),
+            ('can_edit', 'Can edit'),
+            ('can_delete', 'Can delete'),
         ]
 
     def __str__(self):
