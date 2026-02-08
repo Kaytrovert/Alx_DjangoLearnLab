@@ -1,16 +1,12 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import Book, CustomUser
 
-User = get_user_model()
-
-if User in admin.site._registry:
-    admin.site.unregister(User)
+if CustomUser in admin.site._registry:
+    admin.site.unregister(CustomUser)
 
 
-@admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
     """Custom ModelAdmin for the custom user model with additional fields."""
 
@@ -26,6 +22,9 @@ class CustomUserAdmin(BaseUserAdmin):
     add_fieldsets = BaseUserAdmin.add_fieldsets + (
         (None, {'fields': ('email', 'date_of_birth', 'profile_photo')}),
     )
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
 
 
 @admin.register(Book)
