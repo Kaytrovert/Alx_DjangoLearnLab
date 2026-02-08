@@ -131,22 +131,48 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # -----------------------------------------------------------------------------
-# Security best practices (XSS, CSRF, clickjacking, HTTPS cookies, CSP)
+# HTTPS and Secure Redirects
 # -----------------------------------------------------------------------------
 
-# Browser XSS filter: enables browser's XSS filtering (X-XSS-Protection header).
-SECURE_BROWSER_XSS_FILTER = True
+# Redirect all HTTP requests to HTTPS. Ensures all traffic uses secure connections.
+# Set True in production; set False for local HTTP development.
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS): instructs browsers to only access the site
+# via HTTPS for the specified duration. 31536000 seconds = 1 year.
+SECURE_HSTS_SECONDS = 31536000
+
+# Apply HSTS to all subdomains (e.g., api.example.com, www.example.com).
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Allow inclusion in browser HSTS preload lists for stronger protection.
+SECURE_HSTS_PRELOAD = True
+
+# -----------------------------------------------------------------------------
+# Secure Cookies
+# -----------------------------------------------------------------------------
+
+# Session cookies are only sent over HTTPS. Prevents session hijacking over HTTP.
+SESSION_COOKIE_SECURE = True
+
+# CSRF cookies are only sent over HTTPS. Ensures CSRF protection works over secure connections.
+CSRF_COOKIE_SECURE = True
+
+# -----------------------------------------------------------------------------
+# Secure Headers (clickjacking, MIME sniffing, XSS)
+# -----------------------------------------------------------------------------
 
 # Prevent clickjacking: deny embedding in iframes (X-Frame-Options: DENY).
+# Protects against UI redressing attacks.
 X_FRAME_OPTIONS = 'DENY'
 
 # Prevent MIME-type sniffing (X-Content-Type-Options: nosniff).
+# Stops browsers from interpreting responses as a different content type.
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Cookies sent only over HTTPS only. Set True to enforce HTTPS for cookies (required in production).
-# For local HTTP testing, set to False temporarily so session/CSRF work.
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Enable the browser's XSS filtering (X-XSS-Protection header).
+# Helps prevent cross-site scripting attacks.
+SECURE_BROWSER_XSS_FILTER = True
 
 # Content Security Policy: restrict sources for scripts, styles, etc. to reduce XSS risk.
 # Default policy allows same origin and inline (adjust for production).

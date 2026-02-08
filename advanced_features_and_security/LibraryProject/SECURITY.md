@@ -8,7 +8,12 @@ This document describes the security best practices configured in the LibraryPro
 - **DEBUG** is read from the environment (`DJANGO_DEBUG`). Set `DJANGO_DEBUG=False` in production so tracebacks and debug tools are not exposed.
 - **ALLOWED_HOSTS** is set from `ALLOWED_HOSTS` env when not in DEBUG (e.g. `localhost,127.0.0.1,yourdomain.com`).
 
-### Browser and cookie security
+### HTTPS and secure redirects
+- **SECURE_SSL_REDIRECT**: Set to `True` to redirect all HTTP requests to HTTPS.
+- **SECURE_HSTS_SECONDS**: 31536000 (1 year). Instructs browsers to access the site only via HTTPS.
+- **SECURE_HSTS_INCLUDE_SUBDOMAINS** and **SECURE_HSTS_PRELOAD**: Set to `True`.
+
+### Secure cookies
 - **SECURE_BROWSER_XSS_FILTER**: Enables the browser’s XSS filter (X-XSS-Protection: 1; mode=block). Applied via `SecurityHeadersMiddleware`.
 - **X_FRAME_OPTIONS**: Set to `DENY` to prevent clickjacking (pages cannot be embedded in iframes). Handled by Django’s `XFrameOptionsMiddleware`.
 - **SECURE_CONTENT_TYPE_NOSNIFF**: Set to `True` so the server sends X-Content-Type-Options: nosniff, preventing MIME-type sniffing. Handled by Django’s `SecurityMiddleware`.
