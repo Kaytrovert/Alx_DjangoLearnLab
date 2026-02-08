@@ -24,3 +24,8 @@ class BookSearchForm(forms.Form):
     """Safe search: use form validation and ORM filter (parameterized), never string-format SQL."""
 
     query = forms.CharField(max_length=200, required=False, strip=True)
+
+
+class ExampleForm(forms.Form):
+    """Example form for the bookshelf app."""
+    pass
