@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
     'bookshelf',
     'relationship_app',
 ]
@@ -116,7 +115,7 @@ USE_TZ = True
 
 # Custom user model
 # https://docs.djangoproject.com/en/6.0/topics/auth/customizing/#substituting-a-custom-user-model
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
